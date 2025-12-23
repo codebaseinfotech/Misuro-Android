@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.LoginActivity">
+
+    <include layout="@layout/action_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="25dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_medium"
+            android:text="Welcome Back!"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            android:textSize="35sp" />
+
+
+        <TextView
+            style="@style/TextView_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="email" />
+
+        <EditText
+            android:id="@+id/edtCompanyCode"
+            style="@style/EditText_data"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:hint="inserisci la mail" />
+
+        <TextView
+            style="@style/TextView_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="@string/password" />
+
+        <EditText
+            android:id="@+id/edtPassword"
+            style="@style/EditText_data"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:hint="inserisci la password" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnLogin"
+            style="@style/Button_data"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_marginTop="100dp"
+            android:text="@string/log_in" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnContactUs"
+            style="@style/Button_data"
+            android:layout_width="match_parent"
+            android:background="@drawable/bg_button_red"
+            android:layout_height="75dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="5dp"
+            android:text="@string/contatti" />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

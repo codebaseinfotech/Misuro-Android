@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.SettingActivity">
+
+    <include layout="@layout/action_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/TextView_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/company_code" />
+
+        <EditText
+            android:id="@+id/edtCompanyCode"
+            style="@style/EditText_data"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:inputType="none"
+            android:focusable="false" />
+
+        <TextView
+            style="@style/TextView_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/company_name" />
+
+        <EditText
+            android:id="@+id/edtCompanyName"
+            style="@style/EditText_data"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:inputType="none"
+            android:focusable="false" />
+
+        <TextView
+            style="@style/TextView_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/email_id" />
+
+        <EditText
+            android:id="@+id/edtEmail"
+            style="@style/EditText_data"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:inputType="none"
+            android:focusable="false" />
+
+        <TextView
+            style="@style/TextView_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Numero di telefono" />
+
+        <EditText
+            android:id="@+id/edtNumber"
+            style="@style/EditText_data"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:editable="false"/>
+
+        <!--        <LinearLayout-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="50dp"-->
+        <!--            android:weightSum="2">-->
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnContactUs"
+            style="@style/Button_data"
+            android:layout_width="match_parent"
+            android:background="@drawable/bg_button_red"
+            android:layout_height="75dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="5dp"
+            android:text="@string/contatti" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnLogout"
+            style="@style/Button_data"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="5dp"
+            android:text="@string/logout" />
+
+        <!--            <androidx.appcompat.widget.AppCompatButton-->
+        <!--                style="@style/Button_data"-->
+        <!--                android:layout_width="0dp"-->
+        <!--                android:layout_height="75dp"-->
+        <!--                android:layout_marginStart="5dp"-->
+        <!--                android:layout_weight="1"-->
+        <!--                android:text="Contact Us" />-->
+
+        <!--        </LinearLayout>-->
+
+    </LinearLayout>
+
+</LinearLayout>

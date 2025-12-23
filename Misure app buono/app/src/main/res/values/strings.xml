@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">Misuro</string>
+
+
+    <string name="client">Cliente</string>
+    <string name="date">Data</string>
+    <string name="delivery">Consegna</string>
+    <string name="location">Località</string>
+    <string name="glass_window">Invetriata</string>
+    <string name="color">Colore</string>
+    <string name="cremonese">Maniglia</string>
+    <string name="persian">Persiana</string>
+    <string name="flat">Piattina</string>
+    <string name="spacers">Distanziali</string>
+    <string name="roller_shutter">Avvolgibile</string>
+    <string name="dumpster">Cassonetto</string>
+    <string name="mosquito_net">Zanzariera</string>
+    <string name="marble_base">Marmo</string>
+
+    <string name="save">Salva</string>
+    <string name="close">Close</string>
+    <string name="undo">Undo</string>
+
+    <string name="add">Aggiungi</string>
+    <string name="view">Visualizza</string>
+
+    <string name="log_in">Log in</string>
+    <string name="contatti">Contatti</string>
+
+    <string name="password">Password</string>
+    <string name="company_email">Company Email</string>
+    <string name="enter_company_email">Enter company email</string>
+    <string name="enter_password">Enter password</string>
+    <string name="company_code">Codice cliente</string>
+    <string name="company_name">Nome cliente</string>
+    <string name="email_id">Email</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="logout">Logout</string>
+
+    <string name="description">Desc</string>
+    <string name="length">Larg</string>
+    <string name="heigth">Alt</string>
+    <string name="ante">Ante</string>
+    <string name="opening">Aper</string>
+    <string name="glass">Vetro</string>
+    <string name="chassis">Tel</string>
+    <string name="notes">Note</string>
+    <string name="photo">Foto</string>
+
+    <string name="id">ID</string>
+    <string name="customer">cliente</string>
+    <string name="you_see">vedi</string>
+    <string name="dupli">dupl</string>
+    <string name="delete">canc</string>
+    <string name="edit">mod</string>
+
+    <string name="enter_the_password">ENTER THE PASSWORD</string>
+    <string name="cancel">Cancel</string>
+    <string name="okay">Okay</string>
+    <string name="ok">OK</string>
+</resources>
