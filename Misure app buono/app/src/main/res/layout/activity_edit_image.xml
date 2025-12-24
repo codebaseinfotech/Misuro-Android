@@ -86,7 +86,7 @@
                 android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:max="100"
-                android:progress="20" />
+                android:progress="10" />
 
             <!-- Undo -->
             <Button

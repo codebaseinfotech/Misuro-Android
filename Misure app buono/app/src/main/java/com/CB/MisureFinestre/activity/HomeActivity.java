@@ -1,5 +1,6 @@
 package com.CB.MisureFinestre.activity;
 
+import com.CB.MisureFinestre.offline.OfflineSyncWorker;
 import com.bugfender.sdk.Bugfender;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.CB.MisureFinestre.R;
 import com.CB.MisureFinestre.api.ApiInterface;
@@ -44,6 +49,20 @@ public class HomeActivity extends AppCompatActivity {
         apiHome();
         viewById();
         allButtonClick();
+
+
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
+
+        OneTimeWorkRequest request =
+                new OneTimeWorkRequest.Builder(OfflineSyncWorker.class)
+                        .setConstraints(constraints)
+                        .build();
+
+        WorkManager.getInstance(this).enqueue(request);
+
+
     }
 
     private void apiHome() {

@@ -1,7 +1,11 @@
 package com.CB.MisureFinestre.activity;
 
+import com.CB.MisureFinestre.offline.AppDatabase;
+import com.CB.MisureFinestre.offline.OfflineCustomerEntity;
 import com.bugfender.sdk.Bugfender;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.text.TextUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.content.Context;
@@ -379,12 +383,22 @@ public class AddFormOneActivity extends AppCompatActivity {
         btnSave.setOnClickListener(view -> {
             Bugfender.d("ACTION", "Save button clicked");
             if (customerId == -1) {
+                if (hasInternet()) {
+                    apiAddCustomer();   // EXISTING FLOW
+                } else {
+                    saveOfflineCustomer();  // NEW
+                }
                 Bugfender.d("API", "Calling apiAddCustomer() - New customer");
-                apiAddCustomer();   // NEW CUSTOMER
+//                apiAddCustomer();   // NEW CUSTOMER
                 Log.e("aaa", "allButtonClick:  AddCustomer();");
             } else if (Objects.equals(strDoublicat, "doublicat")) {
+                if (hasInternet()) {
+                    apiAddCustomer();   // EXISTING FLOW
+                } else {
+                    saveOfflineCustomer();  // NEW
+                }
                 Bugfender.d("API", "Calling apiAddCustomer() - Duplicate customer");
-                apiAddCustomer();
+//                apiAddCustomer();
                 Log.e("aaa", "strDoublicat: " + strDoublicat);
             } else {
                 Bugfender.d("API", "Calling apiUpdateCustomer() - Edit existing");
@@ -394,6 +408,14 @@ public class AddFormOneActivity extends AppCompatActivity {
         });
 
         Bugfender.d("SETUP", "Button click listeners setup completed");
+    }
+
+
+    public boolean hasInternet() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = cm.getActiveNetworkInfo();
+        return info != null && info.isConnected();
     }
 
     private void openDatePickerDelivery(EditText edtDelivery) {
@@ -1416,5 +1438,93 @@ public class AddFormOneActivity extends AppCompatActivity {
             }
         }
     }
+
+
+    private void saveOfflineCustomer() {
+
+        Gson gson = new Gson();
+
+        // ---------------- CUSTOMER JSON ----------------
+        JsonObject customer = new JsonObject();
+        customer.addProperty("customer", edtClient.getText().toString());
+        customer.addProperty("date", edtDate.getText().toString());
+        customer.addProperty("delivery", edtDelivery.getText().toString());
+        customer.addProperty("location", edtLocation.getText().toString());
+        customer.addProperty("glass_window", edtGlassWindow.getText().toString());
+        customer.addProperty("color", edtColor.getText().toString());
+        customer.addProperty("cremonese", edtCremonese.getText().toString());
+        customer.addProperty("persian", edtPersian.getText().toString());
+        customer.addProperty("flat", edtFlat.getText().toString());
+        customer.addProperty("spacers", edtSpacers.getText().toString());
+        customer.addProperty("roller_shutter", edtRollerShutter.getText().toString());
+        customer.addProperty("dumpster", edtDumpster.getText().toString());
+        customer.addProperty("mosquito_net", edtMosquitoNet.getText().toString());
+        customer.addProperty("marble_base", edtMarbleBase.getText().toString());
+
+        // ---------------- PIECES JSON ----------------
+        List<JsonObject> piecesArray = new ArrayList<>();
+        List<String> imagePaths = new ArrayList<>();
+
+        for (View pieceView : pieceImagesMap.keySet()) {
+
+            EditText edtDescription = pieceView.findViewById(R.id.edtDescription);
+            EditText edtLength = pieceView.findViewById(R.id.edtLength);
+            EditText edtHeight = pieceView.findViewById(R.id.edtHeight);
+            EditText edtAnte = pieceView.findViewById(R.id.edtAnte);
+            EditText edtOpening = pieceView.findViewById(R.id.edtOpening);
+            EditText edtGlass = pieceView.findViewById(R.id.edtGlass);
+            EditText edtChassis = pieceView.findViewById(R.id.edtChassis);
+            EditText edtNote = pieceView.findViewById(R.id.edtNote);
+
+            ArrayList<Bitmap> images = pieceImagesMap.get(pieceView);
+
+            boolean hasText =
+                    !getSafeText(edtDescription).isEmpty() ||
+                            !getSafeText(edtLength).isEmpty() ||
+                            !getSafeText(edtHeight).isEmpty();
+
+            if (!hasText && (images == null || images.isEmpty())) continue;
+
+            JsonObject piece = new JsonObject();
+            piece.addProperty("description", getSafeText(edtDescription));
+            piece.addProperty("length", getSafeText(edtLength));
+            piece.addProperty("height", getSafeText(edtHeight));
+            piece.addProperty("ante", getSafeText(edtAnte));
+            piece.addProperty("opening", getSafeText(edtOpening));
+            piece.addProperty("glass", getSafeText(edtGlass));
+            piece.addProperty("chassis", getSafeText(edtChassis));
+            piece.addProperty("note", getSafeText(edtNote));
+
+            List<String> pieceImgs = new ArrayList<>();
+            if (images != null) {
+                for (Bitmap b : images) {
+                    File f = bitmapToFile(b);
+                    pieceImgs.add(f.getAbsolutePath());
+                    imagePaths.add(f.getAbsolutePath());
+                }
+            }
+
+            piece.add("images", gson.toJsonTree(pieceImgs));
+            piecesArray.add(piece);
+        }
+
+        JsonObject finalData = new JsonObject();
+        finalData.add("customer", customer);
+        finalData.add("pieces", gson.toJsonTree(piecesArray));
+
+        OfflineCustomerEntity entity = new OfflineCustomerEntity();
+        entity.customerJson = gson.toJson(finalData);
+        entity.imagesJson = gson.toJson(imagePaths);
+        entity.isSynced = false;
+
+        AppDatabase.get(this).offlineDao().insert(entity);
+
+        Toast.makeText(this,
+                "Internet nathi. Data offline save thay gayo.",
+                Toast.LENGTH_LONG).show();
+
+        finish();
+    }
+
 
 }

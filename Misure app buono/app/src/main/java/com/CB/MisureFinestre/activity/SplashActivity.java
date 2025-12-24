@@ -44,5 +44,7 @@ public class SplashActivity extends AppCompatActivity {
 
             finish();
         }, 2000); // Splash delay 2 seconds
+
+
     }
 }

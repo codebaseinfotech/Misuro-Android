@@ -102,6 +102,7 @@ public class EditImageActivity extends AppCompatActivity {
         brushSize.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                if (i < 1) i = 1;
                 drawingView.setBrushSize(i);
             }
 
