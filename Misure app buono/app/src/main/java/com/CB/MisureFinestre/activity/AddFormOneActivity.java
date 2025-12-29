@@ -1368,7 +1368,7 @@ public class AddFormOneActivity extends AppCompatActivity {
 
         AppDatabase.get(this).offlineDao().insert(entity);
 
-        Toast.makeText(this, "No Internet. Offline Data save.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "I dati sono stati salvati in locale", Toast.LENGTH_LONG).show();
         finish();
     }
 

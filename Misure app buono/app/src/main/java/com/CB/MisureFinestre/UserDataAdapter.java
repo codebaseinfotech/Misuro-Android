@@ -104,7 +104,7 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
 
         holder.btnEdit.setOnClickListener(v -> {
             if (item.isOffline) {
-                Toast.makeText(context, "Offline customer edit after sync", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Modifica disponibile dopo la sincronizzazione", Toast.LENGTH_SHORT).show();
                 return;
             }
             showDeleteDialog("edit", item.id, position);
@@ -114,7 +114,6 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
             if (item.isOffline) {
                 list.remove(position);
                 notifyItemRemoved(position);
-                Toast.makeText(context, "Offline customer removed locally", Toast.LENGTH_SHORT).show();
             } else {
                 showDeleteDialog("delete", item.id, position);
             }
@@ -123,13 +122,13 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
         holder.btnPdf.setOnClickListener(v -> {
             // 🔴 OFFLINE CHECK
             if (item.isOffline) {
-                Toast.makeText(context, "PDF available after sync", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "PDF disponibile dopo la sincronizzazione", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // 🔴 URL CHECK
             if (item.pdf_url == null || item.pdf_url.trim().isEmpty()) {
-                Toast.makeText(context, "PDF not available", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "PDF non disponibile", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -140,7 +139,7 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
                 context.startActivity(intent);
             } catch (Exception e) {
                 // 🔴 If no PDF viewer installed
-                Toast.makeText(context, "No PDF viewer found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Nessun  PDF trovato", Toast.LENGTH_SHORT).show();
             }
         });
 
