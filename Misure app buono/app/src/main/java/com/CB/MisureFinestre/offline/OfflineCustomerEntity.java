@@ -8,9 +8,7 @@ public class OfflineCustomerEntity {
 
     @PrimaryKey(autoGenerate = true)
     public int id;
-
     public String customerJson;     // full customer + pieces JSON
     public String imagesJson;       // image file paths JSON
-
-    public boolean isSynced;         // false = pending
+    public int isSynced;         // false = pending
 }

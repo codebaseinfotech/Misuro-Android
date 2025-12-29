@@ -12,10 +12,13 @@ public interface OfflineCustomerDao {
     @Insert
     void insert(OfflineCustomerEntity entity);
 
-    @Query("SELECT * FROM offline_customer WHERE isSynced = 0")
+    @Query("SELECT * FROM offline_customer WHERE isSynced = 0 ORDER BY id DESC")
     List<OfflineCustomerEntity> getPending();
 
     @Query("UPDATE offline_customer SET isSynced = 1 WHERE id = :id")
     void markSynced(int id);
 
+    // 🔴 ADD THIS
+    @Query("DELETE FROM offline_customer WHERE id = :id")
+    void deleteById(int id);
 }

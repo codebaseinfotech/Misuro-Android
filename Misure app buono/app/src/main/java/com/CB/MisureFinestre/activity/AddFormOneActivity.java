@@ -3,7 +3,6 @@ package com.CB.MisureFinestre.activity;
 import com.CB.MisureFinestre.offline.AppDatabase;
 import com.CB.MisureFinestre.offline.OfflineCustomerEntity;
 import com.bugfender.sdk.Bugfender;
-
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.TextUtils;
@@ -13,14 +12,10 @@ import android.view.MotionEvent;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -30,17 +25,12 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -49,7 +39,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-
 import com.CB.MisureFinestre.R;
 import com.CB.MisureFinestre.api.ApiInterface;
 import com.CB.MisureFinestre.api.RetrofitClient;
@@ -63,7 +52,6 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -74,26 +62,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 import android.graphics.Matrix;
 import android.media.ExifInterface;
-import android.net.Uri;
 
 public class AddFormOneActivity extends AppCompatActivity {
 
-    ImageView imgBack,  btnSave;
-//    Button btnSave;
+    ImageView imgBack, btnSave;
     LinearLayout piecesContainer;
     private EditText edtClient, edtDate, edtDelivery, edtLocation, edtGlassWindow, edtColor, edtCremonese,
             edtPersian, edtFlat, edtSpacers, edtRollerShutter, edtDumpster, edtMosquitoNet, edtMarbleBase;
-
 
     private ActivityResultLauncher<Intent> galleryLauncher;
     private ActivityResultLauncher<Intent> cameraLauncher;
@@ -121,6 +104,7 @@ public class AddFormOneActivity extends AppCompatActivity {
     private List<PiecesModel> allPiecesFromServer = new ArrayList<>();
     private EditText lastFocusedEditText;
     private InputMethodManager inputMethodManager;
+    private Uri photoUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,10 +132,11 @@ public class AddFormOneActivity extends AppCompatActivity {
 
         viewById();
 
-
         customerId = getIntent().getIntExtra("CUSTOMER_ID", -1);
         userId = getIntent().getIntExtra("USER_ID", -1);
         strDoublicat = getIntent().getStringExtra("DOUBLICAT");
+
+
 
         Bugfender.d("DATA", String.format("Intent data - customerId: %d, userId: %d, doublicat: %s",
                 customerId, userId, strDoublicat));
@@ -178,7 +163,6 @@ public class AddFormOneActivity extends AppCompatActivity {
         }
         long endTime = System.currentTimeMillis();
         Bugfender.d("VIEW_INFLATION", String.format("20 pieces inflated in %d ms", (endTime - startTime)));
-
         Bugfender.d("LIFECYCLE", "AddFormOneActivity - onCreate() completed");
     }
 
@@ -410,10 +394,8 @@ public class AddFormOneActivity extends AppCompatActivity {
         Bugfender.d("SETUP", "Button click listeners setup completed");
     }
 
-
     public boolean hasInternet() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = cm.getActiveNetworkInfo();
         return info != null && info.isConnected();
     }
@@ -432,9 +414,7 @@ public class AddFormOneActivity extends AppCompatActivity {
                     String formattedDay = (selectedDay < 10 ? "0" : "") + selectedDay;
                     String date = selectedYear + "-" + formattedMonth + "-" + formattedDay;
                     edtDelivery.setText(date);
-                },
-                year, month, day
-        );
+                }, year, month, day);
         datePickerDialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
         datePickerDialog.show();
     }
@@ -453,9 +433,7 @@ public class AddFormOneActivity extends AppCompatActivity {
                     String formattedDay = (selectedDay < 10 ? "0" : "") + selectedDay;
                     String date = selectedYear + "-" + formattedMonth + "-" + formattedDay;
                     editText.setText(date);
-                },
-                year, month, day
-        );
+                }, year, month, day);
         datePickerDialog.show();
     }
 
@@ -875,9 +853,7 @@ public class AddFormOneActivity extends AppCompatActivity {
             }
         });
 
-        cameraLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
+        cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                     if (result.getResultCode() == RESULT_OK && photoUri != null) {
                         try {
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoUri);
@@ -890,9 +866,7 @@ public class AddFormOneActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                }
-        );
-
+                });
 
         editImageLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             // Implementation depends on your EditImageActivity result contract
@@ -947,7 +921,6 @@ public class AddFormOneActivity extends AppCompatActivity {
         ImageView imgPieceToggle = pieceView.findViewById(R.id.imgPiece1);
         LinearLayout llPieceContent = pieceView.findViewById(R.id.llPiece1);
         LinearLayout photoContainer = pieceView.findViewById(R.id.photoContainer);
-
         EditText edtDescription = pieceView.findViewById(R.id.edtDescription);
         EditText edtLength = pieceView.findViewById(R.id.edtLength);
         EditText edtHeight = pieceView.findViewById(R.id.edtHeight);
@@ -956,7 +929,6 @@ public class AddFormOneActivity extends AppCompatActivity {
         EditText edtGlass = pieceView.findViewById(R.id.edtGlass);
         EditText edtChassis = pieceView.findViewById(R.id.edtChassis);
         EditText edtNote = pieceView.findViewById(R.id.edtNote);
-
 
         // Each piece gets its own image list
         ArrayList<Bitmap> pieceImages = new ArrayList<>();
@@ -996,6 +968,8 @@ public class AddFormOneActivity extends AppCompatActivity {
     }
 
     private void loadCustomerDetails(int customerId) {
+        Log.e(TAG, "Activity customerId: " + customerId);
+        Log.e(TAG, "Activity userId: " + userId);
         progressDialog.show();
         Map<String, Integer> body = new HashMap<>();
         body.put("id", customerId);
@@ -1127,115 +1101,9 @@ public class AddFormOneActivity extends AppCompatActivity {
         }
     }
 
-//    private void refreshPhotoSlots(LinearLayout container, ArrayList<Bitmap> images) {
-//        Bugfender.d("IMAGE", "refreshPhotoSlots() - Current images: " + images.size());
-//
-//        // Optimized: Only update if view count changed, otherwise just update bitmaps
-//        int expectedViewCount = images.size() + 1; // images + add button
-//        boolean needsRebuild = container.getChildCount() != expectedViewCount;
-//
-//        if (needsRebuild) {
-//            Bugfender.d("IMAGE", "Rebuilding photo container - view count changed");
-//            container.removeAllViews();
-//        } else {
-//            Bugfender.d("IMAGE", "Skipping rebuild - view count unchanged (optimization)");
-//        }
-//
-//        // Show all selected images
-//        for (int i = 0; i < images.size(); i++) {
-//            ImageView imgView = new ImageView(this);
-//            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, 200);
-//            params.setMargins(12, 0, 12, 0);
-//            imgView.setLayoutParams(params);
-//            imgView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//            imgView.setImageBitmap(images.get(i));
-//
-//            GradientDrawable border = new GradientDrawable();
-//            border.setCornerRadius(20);
-//            imgView.setBackground(border);
-//            imgView.setClipToOutline(true);
-//
-//            int finalI = i;
-//            imgView.setOnClickListener(v -> {
-//                Bugfender.d("USER_INTERACTION", "Image #" + finalI + " clicked - opening editor");
-//                progressDialog.show();
-//
-//                // Move heavy I/O operation to background thread
-//                new Thread(() -> {
-//                    long imageProcessStart = System.currentTimeMillis();
-//                    Bugfender.d("IMAGE", "Starting image processing on background thread");
-//
-//                    try {
-//                        File file = new File(getCacheDir(), "temp_image_" + System.currentTimeMillis() + ".png");
-//                        FileOutputStream fos = new FileOutputStream(file);
-//                        images.get(finalI).compress(Bitmap.CompressFormat.PNG, 100, fos);
-//                        fos.flush();
-//                        fos.close();
-//
-//                        long imageProcessEnd = System.currentTimeMillis();
-//                        Bugfender.d("IMAGE", "Image compression completed in " + (imageProcessEnd - imageProcessStart) + "ms");
-//
-//                        // Switch back to UI thread for Activity launch
-//                        runOnUiThread(() -> {
-//                            progressDialog.dismiss();
-//                            Bugfender.d("NAVIGATION", "Launching EditImageActivity");
-//
-//                            Intent intent = new Intent(AddFormOneActivity.this, EditImageActivity.class);
-//                            intent.putExtra("imageUri", Uri.fromFile(file).toString());
-//
-//                            currentImageList = images;
-//                            currentPhotoContainer = container;
-//                            currentImageIndex = finalI;
-//                            editImageLauncher.launch(intent);
-//                        });
-//
-//                    } catch (Exception e) {
-//                        Bugfender.e("IMAGE", "Image processing FAILED: " + e.getMessage());
-//                        e.printStackTrace();
-//                        runOnUiThread(() -> progressDialog.dismiss());
-//                    }
-//                }).start();
-//            });
-//            container.addView(imgView);
-//        }
-//
-//        // Add "+" button
-//        ImageView addButton = new ImageView(this);
-//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, 200);
-//        params.setMargins(12, 0, 12, 0);
-//        addButton.setLayoutParams(params);
-//        addButton.setScaleType(ImageView.ScaleType.CENTER);
-//        addButton.setImageResource(android.R.drawable.ic_input_add);
-//        addButton.setBackgroundResource(R.drawable.edittext_border);
-//
-//        addButton.setOnClickListener(v -> {
-//            currentPhotoContainer = container;
-
-    /// /            currentImageList = images;
-//            View owner = null;
-//            for (Map.Entry<View, ArrayList<Bitmap>> e : pieceImagesMap.entrySet()) {
-//                View key = e.getKey();
-//                LinearLayout pc = key.findViewById(R.id.photoContainer);
-//                if (pc == container) {
-//                    owner = key;
-//                    break;
-//                }
-//            }
-//            if (owner != null) {
-//                currentImageList = pieceImagesMap.get(owner);
-//            } else {
-//                currentImageList = new ArrayList<>();
-//            }
-//
-//            showImageSourceDialog();
-//        });
-//
-//        container.addView(addButton);
-//    }
     private boolean hasPieceData(PiecesModel model) {
 
         if (model == null) return false;
-
         if (!TextUtils.isEmpty(model.description)) return true;
         if (!TextUtils.isEmpty(model.length)) return true;
         if (!TextUtils.isEmpty(model.height)) return true;
@@ -1338,8 +1206,7 @@ public class AddFormOneActivity extends AppCompatActivity {
                     } else {
                         openGallery();
                     }
-                })
-                .show();
+                }).show();
     }
 
     private void openGallery() {
@@ -1358,8 +1225,6 @@ public class AddFormOneActivity extends AppCompatActivity {
             galleryLauncher.launch(chooser);
         }
     }
-
-    private Uri photoUri;
 
     private void openCamera() {
 //        if (checkAndRequestPermission(Manifest.permission.CAMERA)) {
@@ -1412,20 +1277,6 @@ public class AddFormOneActivity extends AppCompatActivity {
         return file;
     }
 
-//    private File bitmapToFile(Bitmap bitmap) {
-//        // Create a file inside cache
-//        File file = new File(getCacheDir(), System.currentTimeMillis() + "_image.png");
-//        try {
-//            FileOutputStream fos = new FileOutputStream(file);
-//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-//            fos.flush();
-//            fos.close();
-//        } catch (Exception e) {
-//            Log.e("bitmapToFile", "Error: " + e.getMessage());
-//        }
-//        return file;
-//    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -1438,7 +1289,6 @@ public class AddFormOneActivity extends AppCompatActivity {
             }
         }
     }
-
 
     private void saveOfflineCustomer() {
 
@@ -1478,8 +1328,7 @@ public class AddFormOneActivity extends AppCompatActivity {
 
             ArrayList<Bitmap> images = pieceImagesMap.get(pieceView);
 
-            boolean hasText =
-                    !getSafeText(edtDescription).isEmpty() ||
+            boolean hasText = !getSafeText(edtDescription).isEmpty() ||
                             !getSafeText(edtLength).isEmpty() ||
                             !getSafeText(edtHeight).isEmpty();
 
@@ -1515,16 +1364,12 @@ public class AddFormOneActivity extends AppCompatActivity {
         OfflineCustomerEntity entity = new OfflineCustomerEntity();
         entity.customerJson = gson.toJson(finalData);
         entity.imagesJson = gson.toJson(imagePaths);
-        entity.isSynced = false;
+        entity.isSynced = 0;
 
         AppDatabase.get(this).offlineDao().insert(entity);
 
-        Toast.makeText(this,
-                "Internet nathi. Data offline save thay gayo.",
-                Toast.LENGTH_LONG).show();
-
+        Toast.makeText(this, "No Internet. Offline Data save.", Toast.LENGTH_LONG).show();
         finish();
     }
-
 
 }

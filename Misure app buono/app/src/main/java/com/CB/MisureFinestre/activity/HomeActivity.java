@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.work.Constraints;
+import androidx.work.ExistingWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
@@ -39,17 +40,11 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bugfender.d("LIFECYCLE", "HomeActivity - onCreate()");
-//        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//            return insets;
-//        });
+
         apiHome();
         viewById();
         allButtonClick();
-
 
         Constraints constraints = new Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -60,8 +55,12 @@ public class HomeActivity extends AppCompatActivity {
                         .setConstraints(constraints)
                         .build();
 
-        WorkManager.getInstance(this).enqueue(request);
-
+//        WorkManager.getInstance(this).enqueue(request);
+        WorkManager.getInstance(this).enqueueUniqueWork(
+                "OFFLINE_SYNC",
+                ExistingWorkPolicy.KEEP,   // 🔥 KEY
+                request
+        );
 
     }
 
