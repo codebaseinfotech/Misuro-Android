@@ -21,4 +21,5 @@ public interface OfflineCustomerDao {
     // 🔴 ADD THIS
     @Query("DELETE FROM offline_customer WHERE id = :id")
     void deleteById(int id);
+
 }

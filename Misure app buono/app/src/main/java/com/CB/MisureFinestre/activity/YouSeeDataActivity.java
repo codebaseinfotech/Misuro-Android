@@ -54,19 +54,11 @@ public class YouSeeDataActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_you_see_data);
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//            return insets;
-//        });
 
         viewById();
         apiCustomerShowData();
-
     }
-
 
     private void viewById() {
         PreferenceManager pref = new PreferenceManager(this);
@@ -111,17 +103,14 @@ public class YouSeeDataActivity extends AppCompatActivity {
 
                 if (!response.isSuccessful()) {
                     return;
-
                 }
 
                 CustomerShowResponse res = response.body();
                 if (res == null || !res.success) {
-//                    Toast.makeText(YouSeeDataActivity.this, "No Data Found", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 CustomerData d = res.data;
-
                 edtClient.setText(d.customer);
                 if (d.date == null || d.date.isEmpty()) {
                     edtDate.setText("");
@@ -157,7 +146,6 @@ public class YouSeeDataActivity extends AppCompatActivity {
                     rvPieceData.setLayoutManager(layoutManager);
                     viewPieceDataAdapter = new ViewPieceDataAdapter(YouSeeDataActivity.this, d.pieces);
                     rvPieceData.setAdapter(viewPieceDataAdapter);
-
                 }
             }
 
@@ -179,6 +167,5 @@ public class YouSeeDataActivity extends AppCompatActivity {
     private String safeInt(Integer value) {
         return value == null ? "" : String.valueOf(value);
     }
-
 
 }

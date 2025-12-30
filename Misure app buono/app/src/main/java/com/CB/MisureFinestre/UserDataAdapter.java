@@ -25,6 +25,7 @@ import com.CB.MisureFinestre.activity.AddFormOneActivity;
 import com.CB.MisureFinestre.activity.YouSeeDataActivity;
 import com.CB.MisureFinestre.api.ApiInterface;
 import com.CB.MisureFinestre.api.RetrofitClient;
+import com.CB.MisureFinestre.offline.AppDatabase;
 import com.CB.MisureFinestre.offline.customerGetData.CustomerCacheEntity;
 import com.CB.MisureFinestre.utils.AppConstants;
 import com.CB.MisureFinestre.utils.PreferenceManager;
@@ -44,11 +45,13 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
     private List<CustomerCacheEntity> list = new ArrayList<>();
     private Context context;
     private ProgressDialog progressDialog;
+    private AppDatabase db;
 
     public UserDataAdapter(List<CustomerCacheEntity> list, Context context) {
         this.list.clear();
         this.list.addAll(list);
         this.context = context;
+        this.db = AppDatabase.get(context);
 
         progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(AppConstants.PLEASE_WAIT_MSG);
@@ -112,8 +115,50 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
 
         holder.btnDelete.setOnClickListener(v -> {
             if (item.isOffline) {
-                list.remove(position);
-                notifyItemRemoved(position);
+                Dialog dialog = new Dialog(context);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.dialog_delete);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.setCancelable(false);
+
+                EditText edtPassword = dialog.findViewById(R.id.edtPassword);
+                Button btnCancel = dialog.findViewById(R.id.btnCancel);
+                Button btnOkay = dialog.findViewById(R.id.btnOkay);
+
+                btnCancel.setOnClickListener(view -> dialog.dismiss());
+                btnOkay.setOnClickListener(view -> {
+                    String pass = edtPassword.getText().toString().trim();
+                    PreferenceManager pref = new PreferenceManager(context);
+                    String passwordCode = pref.getCompanyCode();
+
+                    if (pass.isEmpty()) {
+                        edtPassword.setError("inserisci la password");
+                        return;
+                    }
+                    if (!passwordCode.equals(pass)) {
+                        edtPassword.setError("Password errata");
+                        return;
+                    }
+
+                    int offlineId = Math.abs(item.id);  // 🔴 Convert negative ID back to original offline ID
+                    db.offlineDao().deleteById(offlineId);   // 🔴 Delete from offline table
+                    list.remove(position);  // 🔴 Remove from adapter list
+                    notifyItemRemoved(position);
+                    Toast.makeText(context, "Cliente offline eliminato", Toast.LENGTH_SHORT).show();
+
+                    dialog.dismiss();
+
+                });
+
+                dialog.show();
+
+                // Make popup full width
+                Window window = dialog.getWindow();
+                if (window != null) {
+                    window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    window.setGravity(Gravity.CENTER);
+                }
+
             } else {
                 showDeleteDialog("delete", item.id, position);
             }
@@ -210,8 +255,7 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
             // ---- ACTION BASED ON TYPE ----
             if (type.equals("delete")) {
                 apiDeleteItem(customerId, position);   // already created
-            }
-            else if (type.equals("edit")) {
+            } else if (type.equals("edit")) {
                 Intent intent = new Intent(context, AddFormOneActivity.class);
                 intent.putExtra("CUSTOMER_ID", customerId);
                 intent.putExtra("USER_ID", list.get(position).user_id);
@@ -239,21 +283,21 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
 
         String token = "Bearer " + new PreferenceManager(context).getToken();
         api.deleteCustomer(token, body).enqueue(new Callback<JsonObject>() {
-                    @Override
-                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                        progressDialog.dismiss();
-                        if (response.isSuccessful()) {
-                            list.remove(position);
-                            notifyItemRemoved(position);
-                        }
-                    }
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                progressDialog.dismiss();
+                if (response.isSuccessful()) {
+                    list.remove(position);
+                    notifyItemRemoved(position);
+                }
+            }
 
-                    @Override
-                    public void onFailure(Call<JsonObject> call, Throwable t) {
-                        progressDialog.dismiss();
-                        Log.e("Adapter", "Delete error", t);
-                    }
-                });
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                progressDialog.dismiss();
+                Log.e("Adapter", "Delete error", t);
+            }
+        });
     }
 }
 
@@ -300,7 +344,7 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
 //import com.CB.MisureFinestre.offline.customerGetData.CustomerCacheEntity;
 //public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHolder> {
 //
-////    List<AllCustomerResponse.Customer> list;
+/// /    List<AllCustomerResponse.Customer> list;
 //List<CustomerCacheEntity> list;
 //    Context context;
 //    ProgressDialog progressDialog;
