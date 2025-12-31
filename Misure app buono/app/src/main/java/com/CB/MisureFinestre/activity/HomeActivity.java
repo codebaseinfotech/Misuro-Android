@@ -46,15 +46,8 @@ public class HomeActivity extends AppCompatActivity {
         viewById();
         allButtonClick();
 
-        Constraints constraints = new Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build();
-
-        OneTimeWorkRequest request =
-                new OneTimeWorkRequest.Builder(OfflineSyncWorker.class)
-                        .setConstraints(constraints)
-                        .build();
-
+        Constraints constraints = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
+        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(OfflineSyncWorker.class).setConstraints(constraints).build();
 //        WorkManager.getInstance(this).enqueue(request);
         WorkManager.getInstance(this).enqueueUniqueWork(
                 "OFFLINE_SYNC",
@@ -65,8 +58,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void apiHome() {
-
-
         PreferenceManager pref = new PreferenceManager(this);
         String bearerToken = "Bearer " + pref.getToken();  // make sure token is set
         Log.e(TAG, "apiHome: "+bearerToken );
@@ -78,8 +69,6 @@ public class HomeActivity extends AppCompatActivity {
         Log.e(TAG, "getCompanyCode: "+pref.getCompanyCode() );
         Log.e(TAG, "getAddress: "+pref.getAddress() );
         Log.e(TAG, "getUserId: "+pref.getUserId() );
-
-
 
         ApiInterface api = RetrofitClient.getClient().create(ApiInterface.class);
         Call<ProfileResponse> call = api.getUserProfile(bearerToken);
@@ -101,7 +90,6 @@ public class HomeActivity extends AppCompatActivity {
                         pref.saveCompanyName(user.company_name);
                         Log.e(TAG, "onResponse: "+ user.address );
                         Log.e(TAG, "User Name: " + profile.user.name);
-
 //                        pref.saveProfileData(profile.user);
 //                        pref.saveProfileData(profile.user);
                     }
@@ -116,7 +104,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
     private void viewById() {
@@ -129,26 +116,17 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void allButtonClick() {
-        imgSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, SettingActivity.class);
-                startActivity(intent);
-            }
+        imgSetting.setOnClickListener(view -> {
+            Intent intent = new Intent(HomeActivity.this, SettingActivity.class);
+            startActivity(intent);
         });
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, AddFormOneActivity.class);
-                startActivity(intent);
-            }
+        btnAdd.setOnClickListener(view -> {
+            Intent intent = new Intent(HomeActivity.this, AddFormOneActivity.class);
+            startActivity(intent);
         });
-        btnView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, HomeViewDataActivity.class);
-                startActivity(intent);
-            }
+        btnView.setOnClickListener(view -> {
+            Intent intent = new Intent(HomeActivity.this, HomeViewDataActivity.class);
+            startActivity(intent);
         });
     }
 

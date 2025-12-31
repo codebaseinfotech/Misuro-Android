@@ -22,14 +22,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.CB.MisureFinestre.R;
 import com.CB.MisureFinestre.UserDataAdapter;
 import com.CB.MisureFinestre.ViewPieceDataAdapter;
+import com.CB.MisureFinestre.adapter.PieceAdapter;
 import com.CB.MisureFinestre.api.ApiInterface;
 import com.CB.MisureFinestre.api.RetrofitClient;
 import com.CB.MisureFinestre.model.CustomerData;
 import com.CB.MisureFinestre.model.CustomerShowResponse;
+import com.CB.MisureFinestre.model.PiecesModel;
 import com.CB.MisureFinestre.model.UserDataModel;
+import com.CB.MisureFinestre.offline.AppDatabase;
+import com.CB.MisureFinestre.offline.OfflineCustomerEntity;
 import com.CB.MisureFinestre.utils.AppConstants;
 import com.CB.MisureFinestre.utils.PreferenceManager;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +57,8 @@ public class YouSeeDataActivity extends AppCompatActivity {
     String token = "";
     ViewPieceDataAdapter viewPieceDataAdapter;
     ProgressDialog progressDialog;
+    boolean isOffline = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +67,19 @@ public class YouSeeDataActivity extends AppCompatActivity {
 
         viewById();
         apiCustomerShowData();
+
+//        if (isOffline) {
+//            loadOfflineCustomer();
+//        } else {
+//            apiCustomerShowData();
+//        }
     }
 
     private void viewById() {
         PreferenceManager pref = new PreferenceManager(this);
         token = pref.getToken();
         customerId = getIntent().getIntExtra("CUSTOMER_ID", -1);
+        isOffline = getIntent().getBooleanExtra("IS_OFFLINE", false);
 
         imgBack = findViewById(R.id.imgBack);
         imgBack.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
@@ -160,12 +176,70 @@ public class YouSeeDataActivity extends AppCompatActivity {
         });
     }
 
+//    private void loadOfflineCustomer() {
+//
+//        AppDatabase db = AppDatabase.get(this);
+//        Gson gson = new Gson();
+//        int offlineId = Math.abs(customerId);
+//        OfflineCustomerEntity entity = db.offlineDao().getById(offlineId);
+//        if (entity == null) {
+//            Toast.makeText(this, "Offline data not found", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        try {
+//            JsonObject root = gson.fromJson(entity.customerJson, JsonObject.class);
+//            JsonObject cust = root.getAsJsonObject("customer");
+//            JsonArray pieces = root.getAsJsonArray("pieces");
+//
+//            // ---------- CUSTOMER ----------
+//            edtClient.setText(getSafe(cust, "customer"));
+//            edtDate.setText(getSafe(cust, "date"));
+//            edtDelivery.setText(getSafe(cust, "delivery"));
+//            edtLocation.setText(getSafe(cust, "location"));
+//            edtGlassWindow.setText(getSafe(cust, "glass_window"));
+//            edtColor.setText(getSafe(cust, "color"));
+//            edtCremonese.setText(getSafe(cust, "cremonese"));
+//            edtPersian.setText(getSafe(cust, "persian"));
+//            edtFlat.setText(getSafe(cust, "flat"));
+//            edtSpacers.setText(getSafe(cust, "spacers"));
+//            edtRollerShutter.setText(getSafe(cust, "roller_shutter"));
+//            edtDumpster.setText(getSafe(cust, "dumpster"));
+//            edtMosquitoNet.setText(getSafe(cust, "mosquito_net"));
+//            edtMarbleBase.setText(getSafe(cust, "marble_base"));
+//
+//            // ---------- PIECES ----------
+//            if (pieces != null && pieces.size() > 0) {
+//                List<PiecesModel> pieceList = new ArrayList<>();
+//                for (JsonElement el : pieces) {
+//                    PiecesModel p = gson.fromJson(el, PiecesModel.class);
+//                    pieceList.add(p);
+//                }
+//
+//                rvPieceData.setLayoutManager(new LinearLayoutManager(this));
+//                ViewPieceDataAdapter adapter = new ViewPieceDataAdapter(this, pieceList);
+//                rvPieceData.setAdapter(adapter);
+//            }
+//
+//        } catch (Exception e) {
+//            Toast.makeText(this, "Offline parse error", Toast.LENGTH_SHORT).show();
+//            e.printStackTrace();
+//        }
+//    }
+
+
     private String safe(String value) {
         return value == null ? "" : value;
     }
 
     private String safeInt(Integer value) {
         return value == null ? "" : String.valueOf(value);
+    }
+
+    private String getSafe(JsonObject obj, String key) {
+        return obj.has(key) && !obj.get(key).isJsonNull()
+                ? obj.get(key).getAsString()
+                : "";
     }
 
 }

@@ -32,7 +32,7 @@
 
     </LinearLayout>
 
-        <ImageView
+        <com.github.chrisbanes.photoview.PhotoView
             android:id="@+id/imgFull"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

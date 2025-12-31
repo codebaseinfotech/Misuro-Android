@@ -22,4 +22,7 @@ public interface OfflineCustomerDao {
     @Query("DELETE FROM offline_customer WHERE id = :id")
     void deleteById(int id);
 
+//    @Query("SELECT * FROM offline_customer WHERE id = :id")
+//    OfflineCustomerEntity getById(int id);
+
 }

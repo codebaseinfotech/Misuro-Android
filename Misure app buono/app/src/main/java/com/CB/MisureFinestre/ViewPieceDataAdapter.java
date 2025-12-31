@@ -155,6 +155,7 @@ public class ViewPieceDataAdapter extends RecyclerView.Adapter<ViewPieceDataAdap
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(view);
         AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
         dialog.show();
         btnOk.setOnClickListener(v -> dialog.dismiss());
     }

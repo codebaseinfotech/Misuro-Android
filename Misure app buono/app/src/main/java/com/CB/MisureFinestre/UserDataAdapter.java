@@ -89,12 +89,17 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
         }
 
         holder.btnYouSee.setOnClickListener(v -> {
-            if (item.isOffline) {
-                Toast.makeText(context, "Offline customer (not synced yet)", Toast.LENGTH_SHORT).show();
-                return;
-            }
+//            if (item.isOffline) {
+//                Toast.makeText(context, "Offline customer (not synced yet)", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//            Intent i = new Intent(context, YouSeeDataActivity.class);
+//            i.putExtra("CUSTOMER_ID", item.id);
+//            context.startActivity(i);
+
             Intent i = new Intent(context, YouSeeDataActivity.class);
             i.putExtra("CUSTOMER_ID", item.id);
+            i.putExtra("IS_OFFLINE", item.isOffline);
             context.startActivity(i);
         });
 
