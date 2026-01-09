@@ -100,6 +100,8 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
             Intent i = new Intent(context, YouSeeDataActivity.class);
             i.putExtra("CUSTOMER_ID", item.id);
             i.putExtra("IS_OFFLINE", item.isOffline);
+            Log.e("aaa", "onBindViewHolder item.id: " + item.id);
+            Log.e("aaa", "onBindViewHolder item.user_id: " + item.user_id );
             context.startActivity(i);
         });
 
@@ -150,11 +152,8 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
                     list.remove(position);  // 🔴 Remove from adapter list
                     notifyItemRemoved(position);
                     Toast.makeText(context, "Cliente offline eliminato", Toast.LENGTH_SHORT).show();
-
                     dialog.dismiss();
-
                 });
-
                 dialog.show();
 
                 // Make popup full width

@@ -14,6 +14,7 @@ public class PiecesModel {
     public String glass;
     public String chassis;
     public String note;
+    public String index;
 
     public List<String> photos;
 }

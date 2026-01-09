@@ -82,6 +82,8 @@ public class HomeViewDataActivity extends AppCompatActivity {
         api.getCustomers(token).enqueue(new Callback<AllCustomerResponse>() {
             @Override
             public void onResponse(Call<AllCustomerResponse> call, Response<AllCustomerResponse> response) {
+                Log.e("aaa", "onResponse: "+ response.body().toString());
+
                 progressBar.setVisibility(View.GONE);
                 if (!response.isSuccessful() || response.body() == null) {
                     loadFromLocalDb();
@@ -119,7 +121,7 @@ public class HomeViewDataActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<AllCustomerResponse> call, Throwable t) {
-                Log.e(TAG, "API error: " + t.getMessage());
+                Log.e("aaa", "API error: " + t.getMessage());
                 progressBar.setVisibility(View.GONE);
                 loadFromLocalDb();
             }
@@ -129,7 +131,6 @@ public class HomeViewDataActivity extends AppCompatActivity {
     private void loadFromLocalDb() {
 
         List<CustomerCacheEntity> finalList = new ArrayList<>();
-
         Gson gson = new Gson();
 
         // ================== 1️⃣ OFFLINE DATA (TOP) ==================
